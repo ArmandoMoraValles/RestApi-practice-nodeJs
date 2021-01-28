@@ -25,5 +25,4 @@ router.post("/CreateUser", (req, res) => {
         }
     });
 });
-//Backup
 module.exports = router;
