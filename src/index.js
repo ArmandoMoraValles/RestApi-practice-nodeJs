@@ -10,7 +10,7 @@ app.use(express.json()); //Si se recibe un json nuestro mudulo de expres lo ente
 
 //Routes //Manera de comunicar el servidor con el navegador
 app.use("/api", require("./routes/editTables"));
-app.use("/api", require("./routes/GetData"));
+//app.use("/api", require("./routes/GetData"));
 app.use("/api", require("./routes/querys"));
 app.use(require("./routes/multer"));
 app.use("/api", require("./routes/querys"));
