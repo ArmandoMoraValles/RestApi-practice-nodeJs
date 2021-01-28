@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const mysqlConection = require("../database");
 
-//Fucionando esto con la rama main
+//Fusionando esto con la rama main
 
 //Obtener Datos
 router.get("/getData/:id", (req, res) => {
