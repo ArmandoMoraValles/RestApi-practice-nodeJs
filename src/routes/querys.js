@@ -1,4 +1,5 @@
 const express = require("express");
+const { rmSync, rm } = require("fs");
 const router = express.Router();
 const mysqlConection = require("../database");
 
@@ -71,57 +72,51 @@ router.get("/getNumberOfContractsPerClient", (req, res) => {
         })
 });
 
-//6.  Mostrar clientes sin contrato
 router.get("/getClientsWithoutContract", (req, res) => {
-    mysqlConection.query(`SELECT * FROM client cl
-        LEFT JOIN contract ct
-            on cl.id = ct.id_client
-        WHERE ct.id_client IS NULL;`, (err, rows) => {
-        if (!err) {
-            res.json(rows)
-        } else {
-            res.json({ status: "Wrong query" });
-        };
-    });
-});
-
-//7. Mostrar contratos con plazo a 6 meses
-router.get("/getContractsMoreThan6", (req, res) => {
-    mysqlConection.query(`SELECT *
-        FROM contract
-        WHERE id_term_contract > 2;`, (err, rows) => {
-        if (!err) {
-            res.json(rows)
-        } else {
-            res.json({ status: "Wrong query" });
-        };
-    });
-});
-
-//8. Mostrar contratos con plazo diferente a 1 mes
-router.get("/getContractsDiferent1", (req, res) => {
-    mysqlConection.query(`SELECT *
-        FROM contract
-        WHERE id_term_contract != 1;`, (err, rows) => {
-        if (!err) {
-            res.json(rows)
-        } else {
-            res.json({ status: "Wrong query" });
-        };
-    })
-});
-
-//9. Mostrar cuantos nombres de un usuario empieza con “J”
-router.get("/getUsersStartWithJ", (req, res) => {
-    mysqlConection.query(`SELECT first_name
-        FROM user
-        WHERE first_name LIKE "J%";`, (err, rows) => {
-        if (!err) {
+    data(`SELECT * FROM client cl
+             LEFT JOIN contract ct
+                 on cl.id = ct.id_client
+             WHERE ct.id_client IS NULL;`)
+        .then((rows) => {
             res.json(rows);
-        } else {
-            res.json({ state: "Wrong query" });
-        };
-    });
+        })
+        .catch((err) => {
+            res.send(err)
+        })
+});
+
+router.get("/getContractsMoreThan6", (req, res) => {
+    data(`SELECT *
+             FROM contract
+             WHERE id_term_contract > 2;`)
+        .then((rows) => {
+            res.json(rows);
+        })
+        .catch((err) => {
+            res.send(err);
+        })
+});
+
+router.get("/getContractsDiferent1", (req, res) => {
+    data("/getContractsDiferent1")
+        .then((rows) => {
+            res.json(rows);
+        })
+        .catch((err) => {
+            res.send(err);
+        })
+})
+
+router.get("/getUsersStartWithJ", (req, res) => {
+    data(`SELECT first_name
+          FROM user
+          WHERE first_name LIKE "J%";`)
+        .then((rows) => {
+            res.json(rows);
+        })
+        .catch((err) => {
+            res.send(err);
+        })
 });
 
 //10. Mostrar cantidad de contratos con plazo de 3, 6 y 12 del cliente con más contratos
