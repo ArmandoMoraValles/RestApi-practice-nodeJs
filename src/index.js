@@ -15,6 +15,7 @@ app.use("/api", require("./routes/querys"));
 app.use(require("./routes/multer"));
 app.use("/api", require("./routes/querys"));
 app.use("/api", require("./excelDocuments/exportQuery"));
+
 //Sataring the server
 app.listen(app.get("port"), () => {
     console.log(`Server on port ${app.get("port")}`);
