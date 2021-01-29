@@ -2,66 +2,73 @@ const express = require("express");
 const router = express.Router();
 const mysqlConection = require("../database");
 
-//1. Mostrar todos los usuarios
+const data = (sql) => {
+    return new Promise((resolve, reject) => {
+        mysqlConection.query(sql, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        })
+    });
+}
+
 router.get("/getAllUsers", (req, res) => {
-    mysqlConection.query(`SELECT * FROM user;`, (err, rows) => {
-        if (!err) {
+    data("SELECT * FROM user;")
+        .then((rows) => {
             res.json(rows);
-        } else {
-            res.json({ status: "Wrong query" })
-        };
-    });
+        })
+        .catch((err) => {
+            res.send(err);
+        });
 });
 
-//2. Mostrar nombres de clientes
 router.get("/getClientsName", (req, res) => {
-    mysqlConection.query(`SELECT first_name FROM client;`, (err, rows) => {
-        if (!err) {
+    data("SELECT first_name FROM client;")
+        .then((rows) => {
             res.json(rows);
-        } else {
-            res.json({ status: "Wrong query" })
-        };
-    });
+        })
+        .catch((err) => {
+            res.send(err);
+        })
 });
 
-//3. Mostrar contratos en orden descendiente por numero
+
 router.get("/getContractsByNumber", (req, res) => {
-    mysqlConection.query(`SELECT * FROM contract 
-        ORDER BY number DESC;`, (err, rows) => {
-        if (!err) {
+    data("SELECT * FROM contract ORDER BY number DESC;")
+        .then((rows) => {
             res.json(rows);
-        } else {
-            res.json({ status: "Wrong query" });
-        };
-    });
-
+        })
+        .catch((err) => {
+            res.send(err)
+        })
 });
 
-//4. Mostrar clientes de un usuario con el nombre del usuario
-router.get("/clientsByNameUser", (req, res) => {
-    mysqlConection.query(`SELECT user.first_name, client.first_name 
-        FROM client 
-        JOIN user 
-            ON client.id_user = user.id;`, (err, rows) => {
-        if (!err) {
-            res.json(rows)
-        } else {
-            res.json({ status: "Wrong query" });
-        };
-    });
+
+router.get("/getClientsByNameUser", (req, res) => {
+    data(`SELECT user.first_name, client.first_name 
+             FROM client 
+             JOIN user 
+                 ON client.id_user = user.id;`)
+        .then((rows) => {
+            res.json(rows);
+        })
+        .catch((err) => {
+            res.send(err);
+        })
 });
 
-//5. Mostrar cantidad de contratos por cliente
 router.get("/getNumberOfContractsPerClient", (req, res) => {
-    mysqlConection.query(`SELECT count(id_client) AS contracts, client.first_name 
-        FROM client JOIN contract ON client.id = contract.id_client 
-        GROUP BY first_name;`, (err, rows) => {
-        if (!err) {
-            res.json(rows)
-        } else {
-            res.json({ status: "Wrong query" });
-        };
-    });
+    data(`SELECT count(id_client) AS contracts, client.first_name 
+            FROM client JOIN contract ON client.id = contract.id_client 
+             GROUP BY first_name;`)
+        .then((rows) => {
+            res.json(rows);
+        })
+        .catch((err) => {
+            res.send(err);
+        })
 });
 
 //6.  Mostrar clientes sin contrato
