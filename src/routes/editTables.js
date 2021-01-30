@@ -8,7 +8,7 @@ const mysqlConection = require("../database");
 //Obtener Datos
 router.get("/getData/:id", (req, res) => {
     const { id } = req.params;
-    mysqlConection.query(`SELECT * FROM user WHERE id = ?`, id, (err, rows) => {
+    mysqlConection.query(`SELECT * FROM client WHERE id = ?`, id, (err, rows) => {
         if (!err) {
             res.status(200).json(rows[0])
         } else {
@@ -47,7 +47,7 @@ router.post("/putDataContract", (req, res) => {
         res.status(500).json({ error: "Missing data" });
     }
 });
-//TODO: Agregar mensajes de error
+
 //Insertar usuario con contraseña encriptada
 router.post("/CreateUser", (req, res) => {
     const { id, username, password, first_name, second_name, first_lastname, second_lastname } = req.body;
@@ -72,9 +72,9 @@ router.post("/CreateUser", (req, res) => {
 });
 
 //Cambiar contraseña de usuarios
-router.post("/getUser", (req, res) => {
-    flagSearchBadPasswords = true;
-    flagLogin = true;
+router.post("/changePasswordUser", (req, res) => {
+    let flagSearchBadPasswords = true;
+    let flagLogin = true;
     const { userName, Oldpassword, newPassword, confirmNewPassword } = req.body;
     const arrayData = [userName, Oldpassword];
     let jsonPass = [{}];
@@ -84,44 +84,47 @@ router.post("/getUser", (req, res) => {
     mysqlConection.query(`SELECT * FROM user WHERE username = ?`, arrayData, (err, rows) => {
         if (!err) {
             const jsonUser = JSON.parse(JSON.stringify(rows));
+            console.log(jsonUser[0].password);
             if (jsonUser.length > 0) {
-                bcrypt.compare("aezakmi", jsonUser[0].password, (err, coincidence) => {
+                console.log(Oldpassword);
+                console.log(jsonUser[0].password);
+                bcrypt.compare(Oldpassword, jsonUser[0].password, (err, coincidence) => {
                     flagLogin = coincidence;
-                });
-                if (newPassword === confirmNewPassword) {
-                    jsonPass.map((value, index) => {
-                        if (newPassword === value.password) {
-                            flagSearchBadPasswords = false;
-                        };
-                    });
-                    if (flagSearchBadPasswords === false || flagLogin === false) {
-                        res.status(500).json({
-                            success: false,
-                            message: "Invalid Password",
-                            code: 987123987
-                        });
-                    } else {
-                        res.status(200).json({ succes: "valid Request" });
-                        const wordInPlainText = newPassword;
-                        const rondasDeSal = 10;
-                        bcrypt.hash(wordInPlainText, rondasDeSal, (err, wordEncrypted) => {
-                            const arrayDataEn = [wordEncrypted, userName];
-                            console.log(wordEncrypted);
-                            if (!err) {
-                                mysqlConection.query(`UPDATE user SET password = ? WHERE username = ?;`, arrayDataEn, () => {});
-                            } else {
-                                res.json({ status: "Something went wrong encrypting" });
+                    if (newPassword === confirmNewPassword) {
+                        jsonPass.map((value, index) => {
+                            if (newPassword === value.password) {
+                                flagSearchBadPasswords = false;
                             };
                         });
+                        console.log("2", flagLogin);
+                        if (flagSearchBadPasswords === false || flagLogin === false) {
+                            res.status(500).json({
+                                success: false,
+                                message: "Invalid Password",
+                                code: 987123987
+                            });
+                        } else {
+                            res.status(200).json({ succes: "valid Request" });
+                            const wordInPlainText = newPassword;
+                            const rondasDeSal = 10;
+                            bcrypt.hash(wordInPlainText, rondasDeSal, (err, wordEncrypted) => {
+                                const arrayDataEn = [wordEncrypted, userName];
+                                if (!err) {
+                                    mysqlConection.query(`UPDATE user SET password = ? WHERE username = ?;`, arrayDataEn, () => {});
+                                } else {
+                                    res.json({ status: "Something went wrong encrypting" });
+                                };
+                            });
+                        };
+                    } else {
+                        console.log("Las contraseñas no coinciden");
+                        res.status(500).json({ status: "Something went wrong", err: err });
+                        //Si solo se ejecuta una respuesta no hay problema
                     };
-                } else {
-                    console.log("Las contraseñas no coinciden");
-                    res.status(500).json({ status: "Something went wrong", err: err });
-                    //Si solo se ejecuta una respuesta no hay problema
-                };
+                });
             } else {
                 console.log("Usuario no encontrado");
-                return;
+                res.status(500).json({ status: "Something went wrong", err: err });
             };
         };
     });
