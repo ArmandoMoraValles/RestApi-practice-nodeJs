@@ -13,6 +13,7 @@ app.use("/api", require("./routes/CreateUser"));
 app.use("/api", require("./routes/UpdateClientData"));
 app.use("/api", require("./routes/ChangePasswordUser"));
 app.use("/api", require("./routes/GetData"));
+app.use("/api", require("./routes/InsertContract"));
 app.use("/api", require("./routes/InsertClient"));
 app.use("/api", require("./routes/querys"));
 app.use(require("./routes/multer"));

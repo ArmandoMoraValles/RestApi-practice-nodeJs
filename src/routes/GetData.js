@@ -17,8 +17,8 @@ const data = (sql, id) => {
 router.get("/getData/:id", async(req, res) => {
     try {
         const { id } = req.params;
-        const rows = await data(`SELECT * FROM client WHERE id = ?`, id);
-        res.json(rows);
+        const rows = await data(`SELECT * FROM contract WHERE i = ?`, id);
+        res.send(rows)
     } catch (err) {
         res.send(err);
     }
