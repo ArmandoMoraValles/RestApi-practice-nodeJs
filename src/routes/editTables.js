@@ -163,7 +163,6 @@ router.post("/updateClient", (req, res) => {
                     oldChanges += `${oldData[i]}, `;
                     newChanges += `${newData[i]}, `;
                     flag = true;
-
                 }
             }
             const changeData = [id, oldChanges, newChanges];
