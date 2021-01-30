@@ -2,17 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mysqlConection = require("../database");
 
-router.post("/putDataClient", (req, res) => {
-    const { id, first_name, second_name, first_lastname, second_lasname, curp, id_user } = req.body;
-    const ArrayData = [id, first_name, second_name, first_lastname, second_lasname, curp, id_user];
-    mysqlConection.query(`INSERT INTO client VALUES (?,?,?,?,?,?,?)`, ArrayData, (err, rows) => {
-        if (!err) {
-            res.status(200).json({ succes: "valid Request" });
-        } else {
-            res.status(500).json({ status: "Something went wrong", err: err })
-        };
-    });
-});
+
 
 router.post("/putDataContract", (req, res) => {
     const { id, number, id_term_contract, id_client } = req.body;
@@ -30,4 +20,4 @@ router.post("/putDataContract", (req, res) => {
     }
 });
 
-module.export = router
+module.exports = router;

@@ -9,9 +9,11 @@ app.set("port", process.env.PORT || 3006);
 app.use(express.json()); //Si se recibe un json nuestro mudulo de expres lo entendera
 
 //Routes //Manera de comunicar el servidor con el navegador
+app.use("/api", require("./routes/CreateUser"));
 app.use("/api", require("./routes/UpdateClientData"));
 app.use("/api", require("./routes/ChangePasswordUser"));
 app.use("/api", require("./routes/GetData"));
+app.use("/api", require("./routes/InsertClient"));
 app.use("/api", require("./routes/querys"));
 app.use(require("./routes/multer"));
 app.use("/api", require("./routes/querys"));

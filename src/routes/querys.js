@@ -103,16 +103,4 @@ router.get("/getUsersStartWithJ", async(req, res) => {
     }
 });
 
-// router.get("/getUsersStartWithJ", (req, res) => {
-//     data(`SELECT first_name
-//           FROM user
-//           WHERE first_name LIKE "J%";`)
-//         .then((rows) => {
-//             res.json(rows);
-//         })
-//         .catch((err) => {
-//             res.send(err);
-//         })
-// });
-
 module.exports = router;

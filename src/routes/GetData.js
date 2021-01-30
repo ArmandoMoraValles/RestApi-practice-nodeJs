@@ -14,13 +14,14 @@ const data = (sql, id) => {
     });
 }
 
-router.get("/getData/:id", (req, res) => {
-    const { id } = req.params;
-    data("SELECT * FROM user WHERE id = ?", id).then((rows) => {
+router.get("/getData/:id", async(req, res) => {
+    try {
+        const { id } = req.params;
+        const rows = await data(`SELECT * FROM client WHERE id = ?`, id);
         res.json(rows);
-    }).catch((err) => {
-        console.log(err);
-    })
+    } catch (err) {
+        res.send(err);
+    }
 });
 
 module.exports = router;
