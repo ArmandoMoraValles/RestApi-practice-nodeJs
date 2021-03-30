@@ -19,7 +19,7 @@ const upload = multer({
             cb(null, true);
         } else {
             cb(null, false);
-            return cb(new Error('Only pdf format allowed!'));
+            return cb(new Error('Only .pdf,  format allowed!'));
         }
     }
 });
